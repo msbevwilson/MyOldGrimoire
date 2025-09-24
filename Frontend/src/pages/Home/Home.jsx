@@ -8,8 +8,7 @@ import { getBooks } from '../../lib/common';
 function Home() {
   const [books, setBooks] = useState(null);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line max-len
-  const displayBooks = () => (books ? books.map((book) => <BookItem size={2} book={book} key={book.id} />) : <h1>Vide</h1>);
+  const displayBooks = () => (books ? books.map((book) => <BookItem size={2} book={book} key={book.id} />) : <h1>Empty</h1>);
 
   useEffect(() => {
     async function getBooksList() {
@@ -27,17 +26,15 @@ function Home() {
       <div className={styles.banner} style={backgroundImageStyle} />
       <main className={styles.main}>
         <header className={styles.head}>
-          <h1>Nos Livres</h1>
-          <p>à lire et à relire</p>
-          <Link to="/Ajouter" className="button">+ Ajouter un livre</Link>
+          <h1>Our Books</h1>
+          <p>to read and reread</p>
+          <Link to="/Add" className="button">+ Add a book</Link>
         </header>
         <section className={styles.bookList}>
-          {loading ? <h1>Chargement</h1> : displayBooks()}
+          {loading ? <h1>Loading</h1> : displayBooks()}
         </section>
       </main>
-
     </div>
-
   );
 }
 

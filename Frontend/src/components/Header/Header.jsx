@@ -12,15 +12,15 @@ function Header({ user, setUser }) {
     setUser(null);
     navigate('/');
   };
-
+ 
   return (
     <header className={styles.Header}>
       <div className="container">
-        <img src={Logo} alt="logo mpm vieu grimoire" />
+        <img src={Logo} alt="logo my old grimoire" />
         <ul>
-          <li><NavLink to="/" end className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Accueil</NavLink></li>
-          <li><NavLink to="/Ajouter" className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Ajouter un livre</NavLink></li>
-          <li>{!user ? <NavLink to="/Connexion" className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Se connecter</NavLink> : <span tabIndex={0} role="button" onKeyUp={disconnect} onClick={disconnect}>Se déconnecter</span> }</li>
+          <li><NavLink to="/" end className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Home</NavLink></li>
+          <li><NavLink to="/Add" className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Add a book</NavLink></li>
+          <li>{!user ? <NavLink to="/Connection" className={({ isActive }) => (isActive ? styles.activeLink : undefined)}>Log in</NavLink> : <span tabIndex={0} role="button" onKeyUp={disconnect} onClick={disconnect}>Log out</span> }</li>
         </ul>
       </div>
     </header>

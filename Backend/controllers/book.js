@@ -4,35 +4,38 @@ const fs = require('fs');
 exports.getBooks = (req, res) => {
 	Book.find()
 		.then((books) => res.status(200).json(books))
-		.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+		.catch((error) => res.status(500).json({ error: 'server error' }));
 };
+
 exports.getOneBook = (req, res, next) => {
 	const book = Book.findOne({
 		_id: req.params.id,
 	})
 		.then((book) => {
 			if (!book) {
-				return res.status(400).json({ error: `requête invalide` });
+				return res.status(400).json({ error: `invalid request` });
 			}
 			res.status(200).json(book);
 		})
-		.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+		.catch((error) => res.status(500).json({ error: 'server error' }));
 };
+
 exports.getBestRating = (req, res) => {
 	Book.find()
 		.then((books) => {
 			books.sort((a, b) => b.averageRating - a.averageRating);
-			const bestrating = books.slice(0, 3);
-			res.status(200).json(bestrating);
+			const bestRating = books.slice(0, 3);
+			res.status(200).json(bestRating);
 		})
-		.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+		.catch((error) => res.status(500).json({ error: 'server error' }));
 };
+
 exports.createBook = (req, res, next) => {
 	if (!req.body.book) {
-		return res.status(400).json({ error: 'requête invalide' });
+		return res.status(400).json({ error: 'invalid request' });
 	}
 	if (!req.file) {
-		return res.status(400).json({ error: 'requête invalide' });
+		return res.status(400).json({ error: 'invalid request' });
 	}
 	try {
 		const bookObject = JSON.parse(req.body.book);
@@ -51,12 +54,13 @@ exports.createBook = (req, res, next) => {
 		});
 		book
 			.save()
-			.then(() => res.status(201).json({ message: 'Livre créé avec succès' }))
-			.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+			.then(() => res.status(201).json({ message: 'Book created successfully' }))
+			.catch((error) => res.status(500).json({ error: 'server error' }));
 	} catch {
-		(error) => res.status(500).json({ error: 'erreur serveur' });
+		(error) => res.status(500).json({ error: 'server error' });
 	}
 };
+
 exports.modifyBook = (req, res, next) => {
 	try {
 		const bookObject = req.file
@@ -70,15 +74,15 @@ exports.modifyBook = (req, res, next) => {
 		Book.findOne({ _id: req.params.id })
 			.then((book) => {
 				if (!book) {
-					return res.status(400).json({ error: 'requête invalide' });
+					return res.status(400).json({ error: 'invalid request' });
 				}
 				if (book.userId != req.auth.userId) {
-					return res.status(400).json({ error: 'requête invalide' });
+					return res.status(400).json({ error: 'invalid request' });
 				} else {
 					if (req.file) {
 						const oldFilename = book.imageUrl.split(`images/`)[1];
 						fs.unlink(`images/${oldFilename}`, (err) => {
-							console.log('erreur lors de la suppression');
+							console.log('error during deletion');
 						});
 					}
 					Book.updateOne(
@@ -92,20 +96,21 @@ exports.modifyBook = (req, res, next) => {
 						})
 						.then((updatedBook) => {
 							if (!updatedBook) {
-								return res.status(400).json({ message: 'requête invalide' });
+								return res.status(400).json({ message: 'invalid request' });
 							}
-							res.status(200).json({ message: 'livre modifié' });
+							res.status(200).json({ message: 'book modified' });
 						})
 						.catch((error) =>
-							res.status(500).json({ error: 'erreur serveur' }),
+							res.status(500).json({ error: 'server error' }),
 						);
 				}
 			})
-			.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+			.catch((error) => res.status(500).json({ error: 'server error' }));
 	} catch {
-		return res.status(400).json({ error: 'requête invalide' });
+		return res.status(400).json({ error: 'invalid request' });
 	}
 };
+
 exports.deleteBook = (req, res) => {
 	try {
 		Book.findOne({
@@ -113,37 +118,38 @@ exports.deleteBook = (req, res) => {
 		})
 			.then((book) => {
 				if (!book) {
-					return res.status(400).json({ error: 'requête invalide' });
+					return res.status(400).json({ error: 'invalid request' });
 				}
 				if (book.userId != req.auth.userId) {
-					return res.status(400).json({ error: 'requête invalide' });
+					return res.status(400).json({ error: 'invalid request' });
 				} else {
 					const filename = book.imageUrl.split('/images/')[1];
 					fs.unlink(`images/${filename}`, () => {
 						book
 							.deleteOne()
-							.then(() => res.status(200).json({ message: 'livre effacé' }))
+							.then(() => res.status(200).json({ message: 'book deleted' }))
 							.catch((error) =>
-								res.status(500).json({ message: 'erreur serveur' }),
+								res.status(500).json({ message: 'server error' }),
 							);
 					});
 				}
 			})
-			.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+			.catch((error) => res.status(500).json({ error: 'server error' }));
 	} catch {
-		return res.status(500).json({ error: 'erreur serveur' });
+		return res.status(500).json({ error: 'server error' });
 	}
 };
+
 exports.rateBook = (req, res) => {
 	Book.findOne({ _id: req.params.id })
 		.then((book) => {
 			if (!book) {
-				return res.status(400).json({ error: 'requête invalide' });
+				return res.status(400).json({ error: 'invalid request' });
 			}
 			const rating = { userId: req.body.userId, grade: req.body.rating };
 			const ratings = book.ratings;
 			if (ratings.find((rate) => rate.userId === req.body.userId)) {
-				return res.status(400).json({ error: 'requête invalide' });
+				return res.status(400).json({ error: 'invalid request' });
 			}
 			ratings.push(rating);
 			const averageRating =
@@ -165,7 +171,7 @@ exports.rateBook = (req, res) => {
 					res.status(200).json(book);
 					console.log(`${book.title}: ${book.averageRating}`);
 				})
-				.catch((error) => res.status(400).json({ error: 'requête invalide' }));
+				.catch((error) => res.status(400).json({ error: 'invalid request' }));
 		})
-		.catch((error) => res.status(500).json({ error: 'erreur serveur' }));
+		.catch((error) => res.status(500).json({ error: 'server error' }));
 };

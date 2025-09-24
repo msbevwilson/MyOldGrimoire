@@ -14,6 +14,7 @@ function UpdateBook() {
   const navigate = useNavigate();
   const { connectedUser, auth, userLoading } = useUser();
   const [created, setCreated] = useState(false);
+  
   useEffect(() => {
     if (!userLoading) {
       if (!connectedUser || !auth) {
@@ -21,6 +22,7 @@ function UpdateBook() {
       }
     }
   }, [userLoading]);
+  
   useEffect(() => {
     async function getItem() {
       const data = await getBook(params.id);
@@ -37,16 +39,16 @@ function UpdateBook() {
       <div className={styles.Container}>
         {!created ? (
           <>
-            <h1>Modifier votre livre</h1>
-            <p>Vous pouvez modifier tous les champs sauf la note donnée</p>
+            <h1>Update your book</h1>
+            <p>You can modify all fields except the given rating</p>
             <BookForm book={book} validate={setCreated} />
           </>
         ) : (
           <div className={styles.Created}>
-            <h1>Merci!</h1>
-            <p>votre livre a bien été mis à jour</p>
-            <img src={bookAdd} alt="Livre mis à jour" />
-            <Link to="/" className="button">Retour à l&apos;accueil</Link>
+            <h1>Thank you!</h1>
+            <p>Your book has been successfully updated</p>
+            <img src={bookAdd} alt="Book updated" />
+            <Link to="/" className="button">Return to home</Link>
           </div>
         )}
       </div>

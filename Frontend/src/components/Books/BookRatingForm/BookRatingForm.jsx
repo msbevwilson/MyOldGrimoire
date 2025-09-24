@@ -42,11 +42,11 @@ function BookRatingForm({
   return (
     <div className={styles.BookRatingForm}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <p>{rating > 0 ? 'Votre Note' : 'Notez cet ouvrage'}</p>
+        <p>{rating > 0 ? 'Your Rating' : 'Rate this work'}</p>
         <div className={styles.Stars}>
           {!userRated ? generateStarsInputs(rating, register) : displayStars(rating)}
         </div>
-        {!userRated ? <button type="submit">Valider</button> : null}
+        {!userRated ? <button type="submit">Submit</button> : null}
       </form>
     </div>
   );

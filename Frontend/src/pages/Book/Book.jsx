@@ -52,7 +52,7 @@ function Book() {
       return;
     }
     // eslint-disable-next-line no-restricted-globals
-    const check = confirm('Etes vous sûr de vouloir supprimer ce livre ?');
+    const check = confirm('Are you sure you want to delete this book?');
     if (check) {
       const del = await deleteBook(book.id);
       if (del) {
@@ -61,7 +61,7 @@ function Book() {
     }
   };
 
-  const loadingContent = (<h1>Chargement ...</h1>);
+  const loadingContent = (<h1>Loading ...</h1>);
 
   const bookContent = !loading && !book.delete ? (
     <div>
@@ -70,11 +70,11 @@ function Book() {
         <div className={styles.BookContent}>
           {book?.userId === connectedUser?.userId ? (
             <div className={styles.Owner}>
-              <p>Vous avez publié cet ouvrage, vous pouvez le :</p>
+              <p>You published this work, you can:</p>
               <p>
-                <Link to={`/livre/modifier/${book.id}`}>modifier</Link>
+                <Link to={`/book/edit/${book.id}`}>edit</Link>
                 {' '}
-                <span tabIndex={0} role="button" onKeyUp={onDelete} onClick={onDelete}>supprimer</span>
+                <span tabIndex={0} role="button" onKeyUp={onDelete} onClick={onDelete}>delete</span>
                 {' '}
               </p>
             </div>
@@ -94,13 +94,14 @@ function Book() {
       <BestRatedBooks />
     </div>
   ) : null;
+  
   const deletedContent = book?.delete ? (
     <div className={styles.Deleted}>
       <h1>{book.title}</h1>
-      <p>a bien été supprimé</p>
-      <img src={BookDeleteImage} alt={`Le livre ${book.title} a bien été supprimé`} />
+      <p>has been successfully deleted</p>
+      <img src={BookDeleteImage} alt={`The book ${book.title} has been successfully deleted`} />
       <Link to="/">
-        <button type="button">{'Retour à l\'accueil'}</button>
+        <button type="button">{'Return to home'}</button>
       </Link>
     </div>
   ) : null;
@@ -113,7 +114,6 @@ function Book() {
         {bookContent}
       </div>
       {book?.delete ? deletedContent : null}
-
     </div>
   );
 }
