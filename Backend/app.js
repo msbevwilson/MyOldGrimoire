@@ -9,14 +9,15 @@ require ('dotenv').config()
 const app = express();
 
 mongoose
-	.connect(
-	  'mongodb+srv://beverlyDBUser:vnuFPUB63gYQWst@cluster0.p80kybq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-	  .then(() => {
+	// .connect(
+	//   'mongodb+srv://beverlyDBUser:vnuFPUB63gYQWst@cluster0.p80kybq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+	.connect(process.env.MONGODB_URI)
+	.then(() => {
 		console.log('Successfully connected to MongoDB Atlas!');
-	  })
-	  .catch((error) => {
+	})
+	.catch((error) => {
 		console.log('Unable to connect to MongoDB Atlas!');
-	  });
+	});
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.json());

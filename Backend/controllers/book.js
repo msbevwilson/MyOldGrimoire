@@ -30,35 +30,62 @@ exports.getBestRating = (req, res) => {
 		.catch((error) => res.status(500).json({ error: 'server error' }));
 };
 
+// exports.createBook = (req, res, next) => {
+// 	if (!req.body.book) {
+// 		return res.status(400).json({ error: 'invalid request' });
+// 	}
+// 	if (!req.file) {
+// 		return res.status(400).json({ error: 'invalid request' });
+// 	}
+// 	try {
+// 		const bookObject = JSON.parse(req.body.book);
+// 		delete bookObject.userId;
+// 		const book = new Book({
+// 			...bookObject,
+// 			userId: req.auth.userId,
+// 			imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+// 			ratings: [
+// 				{
+// 					userId: req.auth.userId,
+// 					grade: bookObject.ratings[0].grade,
+// 				},
+// 			],
+// 			averageRating: bookObject.ratings[0].grade,
+// 		});
+// 		book
+// 			.save()
+// 			.then(() => res.status(201).json({ message: 'Book created successfully' }))
+// 			.catch((error) => res.status(500).json({ error: 'server error' }));
+// 	} catch {
+// 		(error) => res.status(500).json({ error: 'server error' });
+// 	}
+// };
+
 exports.createBook = (req, res, next) => {
-	if (!req.body.book) {
-		return res.status(400).json({ error: 'invalid request' });
-	}
-	if (!req.file) {
-		return res.status(400).json({ error: 'invalid request' });
-	}
-	try {
-		const bookObject = JSON.parse(req.body.book);
-		delete bookObject.userId;
-		const book = new Book({
-			...bookObject,
-			userId: req.auth.userId,
-			imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-			ratings: [
-				{
-					userId: req.auth.userId,
-					grade: bookObject.ratings[0].grade,
-				},
-			],
-			averageRating: bookObject.ratings[0].grade,
-		});
-		book
-			.save()
-			.then(() => res.status(201).json({ message: 'Book created successfully' }))
-			.catch((error) => res.status(500).json({ error: 'server error' }));
-	} catch {
-		(error) => res.status(500).json({ error: 'server error' });
-	}
+  const bookObject = JSON.parse(req.body.book);
+  // delete bookObject._id;
+  // delete bookObject._userId;
+  delete bookObject.userId;
+  const book = new Book({
+    ...bookObject,
+    userId: req.auth.userId,
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    ratings: [
+      {
+        userId: req.auth.userId,
+        grade: bookObject.ratings[0].grade,
+      },
+    ],
+    averageRating: bookObject.ratings[0].grade,
+  });
+  book
+    .save()
+    .then(() => {
+      res.status(201).json({ message: "Book created successfully" });
+    })
+    .catch((error) => {
+      res.status(400).json({ error });
+    });
 };
 
 exports.modifyBook = (req, res, next) => {
@@ -76,7 +103,7 @@ exports.modifyBook = (req, res, next) => {
 				if (!book) {
 					return res.status(400).json({ error: 'invalid request' });
 				}
-				if (book.userId != req.auth.userId) {
+				if (book.userId !== req.auth.userId) {
 					return res.status(400).json({ error: 'invalid request' });
 				} else {
 					if (req.file) {
@@ -120,7 +147,7 @@ exports.deleteBook = (req, res) => {
 				if (!book) {
 					return res.status(400).json({ error: 'invalid request' });
 				}
-				if (book.userId != req.auth.userId) {
+				if (book.userId !== req.auth.userId) {
 					return res.status(400).json({ error: 'invalid request' });
 				} else {
 					const filename = book.imageUrl.split('/images/')[1];
