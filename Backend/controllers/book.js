@@ -72,12 +72,6 @@ exports.modifyBook = (req, res, next) => {
 				if (book.userId !== req.auth.userId) {
 					return res.status(400).json({ error: 'invalid request' });
 				} else {
-					if (req.file) {
-						const oldFilename = book.imageUrl.split(`images/`)[1];
-						fs.unlink(`images/${oldFilename}`, (err) => {
-							console.log('error during deletion');
-						});
-					}
 					Book.updateOne(
 						{
 							_id: req.params.id,
