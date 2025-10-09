@@ -5,7 +5,6 @@ const userRouter = require('./routes/user');
 const path = require('path');
 require ('dotenv').config()
 
-
 const app = express();
 
 mongoose

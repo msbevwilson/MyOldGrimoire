@@ -127,42 +127,6 @@ exports.deleteBook = (req, res) => {
 	}
 };
 
-// exports.rateBook = (req, res) => {
-// 	Book.findOne({ _id: req.params.id })
-// 		.then((book) => {
-// 			if (!book) {
-// 				return res.status(400).json({ error: 'invalid request' });
-// 			}
-// 			const rating = { userId: req.body.userId, grade: req.body.rating };
-// 			const ratings = book.ratings;
-// 			if (ratings.find((rate) => rate.userId === req.body.userId)) {
-// 				return res.status(400).json({ error: 'invalid request' });
-// 			}
-// 			ratings.push(rating);
-// 			const averageRating =
-// 				ratings.reduce((acc, current) => {
-// 					return acc + current.grade;
-// 				}, 0) / ratings.length;
-
-// 			Book.findOneAndUpdate(
-// 				{
-// 					_id: req.params.id,
-// 				},
-// 				{
-// 					ratings: ratings,
-// 					averageRating: averageRating,
-// 				},
-// 				{ new: true, runValidators: true },
-// 			)
-// 				.then((book) => {
-// 					res.status(200).json(book);
-// 					console.log(`${book.title}: ${book.averageRating}`);
-// 				})
-// 				.catch((error) => res.status(400).json({ error: 'invalid request' }));
-// 		})
-// 		.catch((error) => res.status(500).json({ error: 'server error' }));
-// };
-
 exports.rateBook = async (req, res, next) => {
    // Check that the user has not already rated the book
    const existingRating = await Book.findOne({
@@ -196,5 +160,3 @@ exports.rateBook = async (req, res, next) => {
     res.status(500).json({ message: 'An error has occurred' })
   }
 }
-
-
