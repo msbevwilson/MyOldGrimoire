@@ -54,7 +54,7 @@ exports.createBook = (req, res, next) => {
 	}
 };
 
-exports.modifyBook = (req, res, next) => {
+exports.modifyBook = async (req, res, next) => {
 	try {
 		const bookObject = req.file
 			? {
@@ -64,37 +64,27 @@ exports.modifyBook = (req, res, next) => {
 			: { ...req.body };
 
 		delete bookObject.userId;
-		Book.findOne({ _id: req.params.id })
-			.then((book) => {
-				if (!book) {
-					return res.status(400).json({ error: 'invalid request' });
-				}
-				if (book.userId !== req.auth.userId) {
-					return res.status(400).json({ error: 'invalid request' });
-				} else {
-					Book.updateOne(
-						{
-							_id: req.params.id,
-						},
-						{ ...bookObject, _id: req.params.id },
-					)
-						.then(() => {
-							return Book.findOne({ _id: req.params.id });
-						})
-						.then((updatedBook) => {
-							if (!updatedBook) {
-								return res.status(400).json({ message: 'invalid request' });
-							}
-							res.status(200).json({ message: 'book modified' });
-						})
-						.catch((error) =>
-							res.status(500).json({ error: 'server error' }),
-						);
-				}
-			})
-			.catch((error) => res.status(500).json({ error: 'server error' }));
-	} catch {
-		return res.status(400).json({ error: 'invalid request' });
+
+		const book = await Book.findOne({ _id: req.params.id });
+		if (!book) {
+			return res.status(400).json({ error: 'invalid request' });
+		}
+		if (book.userId !== req.auth.userId) {
+			return res.status(400).json({ error: 'invalid request' });
+		}
+
+		await Book.updateOne(
+			{ _id: req.params.id },
+			{ ...bookObject, _id: req.params.id }
+		);
+
+		const updatedBook = await Book.findOne({ _id: req.params.id });
+		if (!updatedBook) {
+			return res.status(400).json({ message: 'invalid request' });
+		}
+		res.status(200).json({ message: 'book modified' });
+	} catch (error) {
+		res.status(500).json({ error: 'server error' });
 	}
 };
 
